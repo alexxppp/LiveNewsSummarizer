@@ -1,5 +1,4 @@
 fastapi[all]
 openai
 requests
-os
-dotenv
+python-dotenv
