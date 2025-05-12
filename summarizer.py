@@ -1,7 +1,7 @@
 from openai import OpenAI
 
 
-def extract_tips(articles: list[dict[str, str]], user_role: str, client: OpenAI) -> list[dict[str, str]]:
+def get_tips(disaster_keywords: str, user_role: str, client: OpenAI) -> str:
     """
     Summarize a list of articles using OpenAI.
 
@@ -13,32 +13,17 @@ def extract_tips(articles: list[dict[str, str]], user_role: str, client: OpenAI)
     Returns:
         List of dictionaries with title and summary for each article.
     """
-    summaries = []
+    summary = ""
 
-    for article in articles:
-        title = article.get("title", "")
-        description = article.get("description", "")
-        text_to_summarize = f"{title} {description}"
-        user_role_improved = "volunteer looking to help victims" if user_role.lower() == "supporter" else user_role
+    user_role_improved = "volunteer looking to help victims" if user_role.lower() == "supporter" else user_role
 
-        if not text_to_summarize.strip():
-            continue
+    completion = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "user",
+             "content": f"Give me a 1-2 sentences text containing the most vital advice for a"
+                        f"{user_role_improved} of this disaster: {disaster_keywords}"}
+        ]
+    )
 
-        try:
-            # Generate summary
-            completion = client.chat.completions.create(
-                model="gpt-4o-mini",
-                messages=[
-                    {"role": "user",
-                     "content": f"Give me a 1-2 sentences text containing the most vital advice for a"
-                                f"{user_role_improved} of this disaster: {text_to_summarize}"}
-                ]
-            )
-            summary = completion.choices[0].message.content
-            summaries.append({"title": title, "summary": summary})
-        except Exception as e:
-            # Log error and continue
-            print(f"Error summarizing article '{title}': {str(e)}")
-            continue
-
-    return summaries
+    return completion.messages[0]["content"]
