@@ -2,8 +2,7 @@ from fastapi import FastAPI, HTTPException
 from dotenv import load_dotenv
 import os
 from openai import OpenAI
-from news_api import fetch_news
-from summarizer import extract_tips
+from summarizer import get_tips
 
 # Load environment variables from .env file
 load_dotenv()
@@ -28,18 +27,16 @@ client = OpenAI(api_key=OPENAI_API_KEY)
 # Define the endpoint
 @app.get("/summarize-disaster-news")
 async def get_tips_from_disaster_news(disaster: str, user_role: str):
-    # Fetch news articles
-    articles = fetch_news(disaster, NEWSAPI_API_KEY)
-
+    
     # Summarize articles
-    summaries = extract_tips(articles, user_role, client)
+    summary = get_tips(disaster, user_role, client)
 
     # Check if any summaries were generated
-    if not summaries:
+    if not summary:
         raise HTTPException(status_code=500, detail="Failed to generate any summaries")
 
     # Return results
-    return {"disaster": disaster, "summaries": summaries}
+    return {"disaster": disaster, "summary": summary}
 
 # Run the app (for development)
 if __name__ == "__main__":
