@@ -1,5 +1,6 @@
 from openai import OpenAI
 
+
 def get_tips(disaster_keywords: str, user_role: str, client: OpenAI) -> str:
     """
     Generate a summary or vital advice for a disaster using OpenAI's ChatGPT.
@@ -21,7 +22,9 @@ def get_tips(disaster_keywords: str, user_role: str, client: OpenAI) -> str:
                 {
                     "role": "user",
                     "content": f"Give me a 1-2 sentence text containing the most vital advice for a "
-                               f"{user_role_improved} of this disaster: {disaster_keywords}"
+                               f"{user_role_improved} of this disaster: {disaster_keywords}. It is important "
+                               f"that you repeat the name of the disaster, and take into account that this message "
+                               f"is for a user of an emergency app, that is currently a {user_role_improved} of this disaster."
                 }
             ]
         )
