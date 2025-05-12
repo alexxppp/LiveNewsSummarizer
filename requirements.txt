@@ -1,2 +1,5 @@
 fastapi[all]
 openai
+requests
+os
+dotenv
