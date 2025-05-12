@@ -24,7 +24,9 @@ def get_tips(disaster_keywords: str, user_role: str, client: OpenAI) -> str:
                     "content": f"Give me a 1-2 sentence text containing the most vital advice for a "
                                f"{user_role_improved} of this disaster: {disaster_keywords}. It is important "
                                f"that you repeat the name of the disaster, and take into account that this message "
-                               f"is for a user of an emergency app, that is currently a {user_role_improved} of this disaster."
+                               f"is for a user of an emergency app, that is currently a {user_role_improved} of this disaster. "
+                               f"Adding to this, make research on this disaster and find helpful information, like "
+                               f"emergency points, volunteering organizations, etc..."
                 }
             ]
         )
