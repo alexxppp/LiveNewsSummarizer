@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 import os
 from openai import OpenAI
 from summarizer import get_tips
+from suggester import get_suggestion
 
 # Load environment variables from .env file
 load_dotenv()
@@ -40,6 +41,26 @@ async def get_tips_from_disaster_news(
 
         # Return results
         return {"disaster": disaster, "summary": summary}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error processing request: {str(e)}")
+
+
+@app.get("/suggest-need-level")
+async def suggest_need_level(
+        request_text: str = Query(..., min_length=1, description="Text to be suggested")
+):
+    if not request_text.strip():
+        raise HTTPException(status_code=422, detail="Text to be suggested")
+
+    try:
+        answer = get_suggestion(request_text, client)
+
+        if not answer.strip():
+            raise HTTPException(status_code=500, detail="Failed to generate a valid suggestion")
+
+        return {"suggestedNeedLevel": answer}
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error processing request: {str(e)}")
 
